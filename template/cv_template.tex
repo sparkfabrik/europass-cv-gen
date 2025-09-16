@@ -1,0 +1,44 @@
+\documentclass[english,a4paper]{europasscv}
+\usepackage[english]{babel}
+\begin{document}
+\begin{europasscv}
+
+\ecvname{ {{ name }} }
+\ecvaddress{ {{ personal_info.address }} }
+\ecvtelephone{ {{ personal_info.phone }} }
+\ecvemail{ {{ personal_info.email }} }
+\ecvhomepage{ {{ personal_info.homepage | join(" ") }} }
+\ecvdateofbirth{ {{ personal_info.date_of_birth }} }
+\ecvnationality{ {{ personal_info.nationality }} }
+
+\ecvbigitem{Job applied for}{ {{ job_applied_for }} }
+
+\ecvsection{Work experience}
+{% for job in work_experience %}
+\ecvtitle{ {{ job.period }} }{ {{ job.title }} }
+\ecvitem{}{ {{ job.employer }}, {{ job.location }} }
+\ecvitem{}{ {{ job.description }} }
+{% endfor %}
+
+\ecvsection{Education and training}
+{% for edu in education %}
+\ecvtitlelevel{ {{ edu.period }} }{ {{ edu.degree }} }{ {{ edu.level }} }
+\ecvitem{}{ {{ edu.institution }} }
+{% endfor %}
+
+\ecvsection{Personal skills}
+\ecvmothertongue{ {{ languages.mother_tongue }} }
+{% for lang in languages.foreign_languages %}
+\ecvlanguage{ {{ lang.language }} }{ {{ lang.listening }} }{ {{ lang.reading }} }{ {{ lang.writing }} }{ {{ lang.listening }} }{ {{ lang.reading }} }
+{% endfor %}
+
+\ecvblueitem{Computer skills}{
+\begin{ecvitemize}
+{% for skill in skills.computer %}
+  \item {{ skill }}
+{% endfor %}
+\end{ecvitemize}
+}
+
+\end{europasscv}
+\end{document}

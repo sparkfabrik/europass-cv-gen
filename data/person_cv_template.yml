@@ -1,0 +1,119 @@
+name: Alex Taylor
+
+personal_info:
+  address: 42 Example Street, Example City, EX 12345, Countryland
+  phone: "+123 456 789 000"
+  mobile: "+123 555 666 777"
+  email: alex.taylor@example.com
+  homepage:
+    - www.alextaylor.dev
+    - www.portfolio-alex.com
+  im:
+    - platform: Skype
+      handle: alex.taylor.skype
+    - platform: Signal
+      handle: "@alexsignal"
+  date_of_birth: 1985-04-12
+  nationality: Countrylandian
+
+job_applied_for: Senior Project Manager – Digital Transformation
+
+work_experience:
+  - period: January 2022 – Present
+    title: Delivery Manager
+    employer: FutureTech Solutions
+    location: Capital City, Countryland
+    description: >
+      Leading cross-functional teams in delivering cloud-native solutions.
+      Managed a portfolio of 5+ enterprise-level digital projects, improving delivery timelines by 25%.
+
+  - period: January 2020 – 2022
+    title: Senior Project Manager
+    employer: FutureTech Solutions
+    location: Capital City, Countryland
+    description: >
+      Leading cross-functional teams in delivering cloud-native solutions.
+      Managed a portfolio of 5+ enterprise-level digital projects, improving delivery timelines by 25%.
+
+  - period: June 2015 – December 2019
+    title: IT Consultant
+    employer: OpenSphere Consulting
+    location: Metro Region, Countryland
+    description: >
+      Provided strategic IT consulting for government and mid-sized enterprises.
+      Focus on agile transformation, DevOps practices and process digitization.
+
+  - period: July 2012 – May 2015
+    title: Junior Analyst
+    employer: Insight Corp
+    location: Industrial Hub, Countryland
+    description: >
+      Supported data-driven projects in logistics and manufacturing. Produced BI dashboards
+      and internal reporting tools using Python and SQL.
+
+education:
+  - period: 2008 – 2010
+    degree: MSc in Information Systems Management
+    institution: University of Tech Valley
+    level: ISCED 7
+    details: >
+      Thesis on "Cloud adoption models in SMEs". Focus on IT governance and service management.
+
+  - period: 2004 – 2008
+    degree: BSc in Computer Science
+    institution: National Technical University
+    level: ISCED 6
+    details:
+      - Algorithms and Data Structures
+      - Software Engineering
+      - Human-Computer Interaction
+      - Databases
+
+languages:
+  mother_tongue: Countrylish
+  foreign_languages:
+    - language: English
+      listening: C1
+      reading: C2
+      spoken_interaction: C1
+      spoken_production: B2
+      writing: C1
+      certificate: TOEFL iBT 110
+
+    - language: Spanish
+      listening: B2
+      reading: B2
+      spoken_interaction: B1
+      spoken_production: B1
+      writing: B2
+
+skills:
+  communication:
+    - Experienced in remote team facilitation using Agile rituals.
+    - Presented project outcomes at 3 international conferences.
+  organisational:
+    - Managed budgets up to €1M per project.
+    - Mentored junior PMs and interns.
+  digital_competence:
+    information_processing: Proficient
+    communication: Independent
+    content_creation: Proficient
+    safety: Independent
+    problem_solving: Proficient
+  computer:
+    - Advanced knowledge of Microsoft Office, Trello, and Notion
+    - Familiar with Python, Git, and Markdown
+    - Basic knowledge of Linux and containerization
+  other:
+    - Photography and travel writing enthusiast.
+    - Volunteer language teacher on weekends.
+
+driving_license: B
+
+publications:
+  - title: "Leveraging Microservices for Government Portals"
+    year: 2021
+    journal: Journal of Public Sector IT
+  - title: "Digital Maturity Models: A Comparative Analysis"
+    year: 2019
+    journal: International Review of IT Management
