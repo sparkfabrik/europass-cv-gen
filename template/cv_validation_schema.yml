@@ -1,0 +1,314 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+title: "Europass CV Validation Schema"
+description: "Schema for validating Europass CV YAML files for PDF generation"
+type: object
+
+required:
+  - name
+  - personal_info
+  - work_experience
+  - education
+  - languages
+
+properties:
+  name:
+    type: string
+    description: "Full name of the CV owner"
+    minLength: 1
+    maxLength: 100
+
+  personal_info:
+    type: object
+    description: "Personal information section"
+    required:
+      - date_of_birth
+      - nationality
+      - gender
+    properties:
+      address:
+        type: string
+        description: "Full postal address (hidden in anonymous mode)"
+        minLength: 10
+        maxLength: 200
+      phone:
+        type: string
+        description: "Primary phone number (hidden in anonymous mode)"
+        pattern: "^\\+\\d{1,4}\\s\\d{3}\\s\\d{3}\\s\\d{3}$"
+      mobile:
+        type: string
+        description: "Mobile phone number (optional, hidden in anonymous mode)"
+        pattern: "^\\+\\d{1,4}\\s\\d{3}\\s\\d{3}\\s\\d{3}$"
+      email:
+        type: string
+        format: email
+        description: "Email address (hidden in anonymous mode)"
+      homepage:
+        type: array
+        description: "List of personal websites/portfolios (hidden in anonymous mode)"
+        items:
+          type: string
+          pattern: "^(https?://)?(www\\.)?[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\\.[a-zA-Z]{2,}(/.*)?$"
+        minItems: 1
+        maxItems: 5
+      im:
+        type: array
+        description: "Instant messaging contacts (hidden in anonymous mode)"
+        items:
+          type: object
+          required: [platform, handle]
+          properties:
+            platform:
+              type: string
+              enum: [Skype, Signal, Telegram, WhatsApp, Discord, LinkedIn, Twitter]
+              description: "IM platform name"
+            handle:
+              type: string
+              minLength: 1
+              maxLength: 50
+              description: "Username/handle on the platform"
+          additionalProperties: false
+        maxItems: 10
+      date_of_birth:
+        type: string
+        format: date
+        description: "Date of birth in YYYY-MM-DD format (always visible)"
+      nationality:
+        type: string
+        description: "Nationality (always visible)"
+        minLength: 1
+        maxLength: 50
+      gender:
+        type: string
+        enum: [Male, Female, Other, "Prefer not to say"]
+        description: "Gender (always visible, required for EU tenders)"
+    additionalProperties: false
+
+  job_applied_for:
+    type: string
+    description: "Position/role being applied for"
+    minLength: 5
+    maxLength: 200
+
+  work_experience:
+    type: array
+    description: "Work experience entries (at least one required)"
+    minItems: 1
+    maxItems: 20
+    items:
+      type: object
+      required: [period, title, employer, location, description]
+      properties:
+        period:
+          type: string
+          description: "Employment period (e.g., 'January 2020 – Present')"
+          pattern: "^.+ – .+$"
+          minLength: 5
+          maxLength: 50
+        title:
+          type: string
+          description: "Job title/position"
+          minLength: 1
+          maxLength: 100
+        employer:
+          type: string
+          description: "Company/organization name"
+          minLength: 1
+          maxLength: 100
+        location:
+          type: string
+          description: "Work location (city, country)"
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+          description: "Job description and achievements"
+          minLength: 10
+          maxLength: 1000
+      additionalProperties: false
+
+  education:
+    type: array
+    description: "Education and training entries (at least one required)"
+    minItems: 1
+    maxItems: 15
+    items:
+      type: object
+      required: [period, degree, institution]
+      properties:
+        period:
+          type: string
+          description: "Education period (e.g., '2015 – 2018')"
+          pattern: "^\\d{4} – \\d{4}$"
+        degree:
+          type: string
+          description: "Degree or qualification obtained"
+          minLength: 1
+          maxLength: 150
+        institution:
+          type: string
+          description: "Educational institution name"
+          minLength: 1
+          maxLength: 150
+        level:
+          type: string
+          pattern: "^ISCED [0-8]$"
+          description: "ISCED education level (e.g., 'ISCED 6')"
+        details:
+          oneOf:
+            - type: string
+              description: "Additional details as text"
+              maxLength: 500
+            - type: array
+              description: "Additional details as list"
+              items:
+                type: string
+                maxLength: 100
+              maxItems: 10
+      additionalProperties: false
+
+  languages:
+    type: object
+    description: "Language skills section"
+    required: [mother_tongue]
+    properties:
+      mother_tongue:
+        type: string
+        description: "Native/mother tongue language"
+        minLength: 1
+        maxLength: 50
+      foreign_languages:
+        type: array
+        description: "Foreign language skills"
+        items:
+          type: object
+          required: [language]
+          properties:
+            language:
+              type: string
+              description: "Language name"
+              minLength: 1
+              maxLength: 50
+            listening:
+              type: string
+              enum: [A1, A2, B1, B2, C1, C2]
+              description: "Listening skill level (CEFR)"
+            reading:
+              type: string
+              enum: [A1, A2, B1, B2, C1, C2]
+              description: "Reading skill level (CEFR)"
+            spoken_interaction:
+              type: string
+              enum: [A1, A2, B1, B2, C1, C2]
+              description: "Spoken interaction skill level (CEFR)"
+            spoken_production:
+              type: string
+              enum: [A1, A2, B1, B2, C1, C2]
+              description: "Spoken production skill level (CEFR)"
+            writing:
+              type: string
+              enum: [A1, A2, B1, B2, C1, C2]
+              description: "Writing skill level (CEFR)"
+            certificate:
+              type: string
+              description: "Language certificate details"
+              maxLength: 100
+          additionalProperties: false
+        maxItems: 10
+    additionalProperties: false
+
+  skills:
+    type: object
+    description: "Skills and competences section"
+    properties:
+      communication:
+        type: array
+        description: "Communication skills"
+        items:
+          type: string
+          minLength: 1
+          maxLength: 200
+        maxItems: 10
+      organisational:
+        type: array
+        description: "Organisational/managerial skills"
+        items:
+          type: string
+          minLength: 1
+          maxLength: 200
+        maxItems: 10
+      digital_competence:
+        type: object
+        description: "Digital competence levels"
+        properties:
+          information_processing:
+            type: string
+            enum: [Basic, Independent, Proficient]
+            description: "Information processing skill level"
+          communication:
+            type: string
+            enum: [Basic, Independent, Proficient]
+            description: "Digital communication skill level"
+          content_creation:
+            type: string
+            enum: [Basic, Independent, Proficient]
+            description: "Content creation skill level"
+          safety:
+            type: string
+            enum: [Basic, Independent, Proficient]
+            description: "Digital safety skill level"
+          problem_solving:
+            type: string
+            enum: [Basic, Independent, Proficient]
+            description: "Digital problem solving skill level"
+        additionalProperties: false
+      computer:
+        type: array
+        description: "Computer skills and software knowledge"
+        items:
+          type: string
+          minLength: 1
+          maxLength: 100
+        minItems: 1
+        maxItems: 20
+      other:
+        type: array
+        description: "Other skills and interests"
+        items:
+          type: string
+          minLength: 1
+          maxLength: 200
+        maxItems: 15
+    additionalProperties: false
+
+  driving_license:
+    type: string
+    pattern: "^[A-Z]{1,3}(\\+[A-Z]{1,3})*$"
+    description: "Driving license categories (e.g., 'B', 'A+B', 'C1+E')"
+    maxLength: 20
+
+  publications:
+    type: array
+    description: "Publications and research"
+    items:
+      type: object
+      required: [title, year, journal]
+      properties:
+        title:
+          type: string
+          description: "Publication title"
+          minLength: 1
+          maxLength: 200
+        year:
+          type: integer
+          minimum: 1950
+          maximum: 2030
+          description: "Publication year"
+        journal:
+          type: string
+          description: "Journal or publication venue"
+          minLength: 1
+          maxLength: 150
+      additionalProperties: false
+    maxItems: 50
+
+additionalProperties: false

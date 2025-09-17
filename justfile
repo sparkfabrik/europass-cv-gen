@@ -13,7 +13,7 @@ build:
     docker build -t {{image}} .
 
 # Generate a CV from a YAML file
-cv name anon="":
+cv name anon="" force="":
     #!/usr/bin/env bash
     if [ "{{anon}}" = "true" ] || [ "{{anon}}" = "--anon" ]; then
         echo "🔄 Generating anonymous CV for {{name}}..."
@@ -24,12 +24,20 @@ cv name anon="":
         anon_flag=""
         output_suffix=""
     fi
+
+    if [ "{{force}}" = "true" ] || [ "{{force}}" = "--force" ]; then
+        force_flag="--force"
+    else
+        force_flag=""
+    fi
+
     mkdir -p build
     docker run --rm \
         -v "$(pwd)/data:/app/data:ro" \
+        -v "$(pwd)/template:/app/template:ro" \
         -v "$(pwd)/build:/app/build" \
         -u $(id -u):$(id -g) \
-        {{image}} {{name}} $anon_flag
+        {{image}} {{name}} $anon_flag $force_flag
     echo "✅ CV generated successfully: build/{{name}}${output_suffix}.pdf"
 
 # List available CV templates
@@ -56,6 +64,20 @@ auto name anon="": ensure-image
 # Generate anonymous CV (shortcut for EU tenders)
 anon name: ensure-image
     just cv {{name}} true
+
+# Validate CV YAML file only (dry-run mode)
+validate name: ensure-image
+    #!/usr/bin/env bash
+    echo "🔍 Validating CV: {{name}}..."
+    docker run --rm \
+        -v "$(pwd)/data:/app/data:ro" \
+        -v "$(pwd)/template:/app/template:ro" \
+        -u $(id -u):$(id -g) \
+        {{image}} {{name}} --validate
+
+# Generate CV with force flag (bypass validation errors)
+force name anon="": ensure-image
+    just cv {{name}} {{anon}} true
 
 # Generate all available CVs
 all: ensure-image

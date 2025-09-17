@@ -52,7 +52,19 @@ europass-cv-gen/
 | `just anon <name>` | Generate anonymous CV (for EU tenders) |
 | `just auto <name>` | Generate CV (builds Docker image if needed) |
 | `just cv <name> true` | Generate anonymous CV (alternative syntax) |
+| `just validate <name>` | **NEW!** Validate CV YAML file only (dry-run mode) |
+| `just force <name>` | **NEW!** Generate CV bypassing validation warnings/errors |
 | `just list` | Show available CV templates |
+
+### 🔍 NEW: CV Validation System
+
+The tool now includes comprehensive YAML validation with helpful error messages and suggestions:
+
+- **Automatic Validation**: All CV generation includes validation
+- **Schema-Based**: Uses JSONSchema for comprehensive structure validation
+- **Field Suggestions**: Suggests corrections for typos (e.g., "telephon" → "phone")
+- **Detailed Reports**: Clear error messages with field paths
+- **Dry-Run Mode**: Validate without generating PDF
 
 ### Anonymous CVs for EU Tenders
 
@@ -78,7 +90,10 @@ For EU public administration tenders, you often need anonymized CVs. The anonymo
 # List available templates
 just list
 
-# Generate a standard CV
+# Validate a CV file (dry-run mode)
+just validate john_doe
+
+# Generate a standard CV (with automatic validation)
 just auto john_doe
 
 # Generate an anonymous CV (for EU tenders)
@@ -88,6 +103,9 @@ just anon john_doe
 just cv john_doe        # Standard version
 just cv john_doe true   # Anonymous version
 
+# Force generation despite validation warnings
+just force john_doe
+
 # Generate all CVs (standard and anonymous)
 just all-anon
 
@@ -95,9 +113,38 @@ just all-anon
 just clean
 ```
 
+### 🔍 Validation Examples
+
+```bash
+# Validate a CV and see detailed report
+just validate person_cv_template
+
+# Example validation output:
+# ✅ CV validation passed successfully!
+
+# Example validation with errors:
+# ❌ 2 errors | ⚠️ 1 warning
+# ERRORS:
+#   ❌ ERROR: Required field 'work_experience' is missing
+#   ❌ ERROR: Invalid email format (at personal_info.email)
+# WARNINGS:
+#   ⚠️ WARNING: Unknown field 'telephon' (at personal_info.telephon)
+#    💡 Suggestion: Did you mean 'phone'?
+```
+
 ## 📝 Creating Your CV Data
 
-Create a YAML file in the `data/` directory. Here's the structure:
+Create a YAML file in the `data/` directory. The tool automatically validates your CV structure and provides helpful suggestions for any issues.
+
+### ✅ Validation Features
+
+- **Required Fields**: Ensures all mandatory sections are present
+- **Data Types**: Validates field types (strings, dates, arrays, etc.)
+- **Format Validation**: Checks email formats, phone numbers, date formats
+- **Field Suggestions**: Suggests corrections for typos (e.g., "emale" → "email")
+- **Structure Validation**: Ensures proper nesting and array structures
+
+### CV Structure
 
 ```yaml
 name: Your Name
@@ -226,6 +273,19 @@ Generated PDFs follow the official Europass CV format and include:
 - Language skills
 - Computer skills
 - And more based on your YAML data
+
+## 🔧 Validation Schema
+
+The validation system uses a comprehensive JSONSchema defined in `template/cv_validation_schema.yml`. This schema:
+
+- **Enforces Required Fields**: name, personal_info, work_experience, education, languages
+- **Validates Data Types**: strings, dates, arrays, objects
+- **Checks Formats**: email addresses, phone numbers, dates, URLs
+- **Validates Enums**: language skill levels (A1-C2), digital competence levels
+- **Provides Structure Rules**: minimum/maximum lengths, array size limits
+- **Supports Conditional Logic**: different requirements for different sections
+
+You can customize the schema to match your specific CV requirements.
 
 ## 🆘 Troubleshooting
 
