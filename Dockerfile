@@ -1,7 +1,7 @@
 # Multi-stage Docker image for CV generation
 # Uses official Python image with LaTeX tools for PDF compilation
 
-FROM python:3.11-slim as base
+FROM python:3.11-slim AS base
 
 # Install system dependencies and LaTeX
 RUN apt-get update && apt-get install -y \
