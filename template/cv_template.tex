@@ -3,8 +3,10 @@
 \begin{document}
 \begin{europasscv}
 
+{% if anonymous %}
+\ecvname{[Name withheld]}
+{% else %} % End if anonymous
 \ecvname{ {{ name }} }
-{% if not anonymous %}
 \ecvaddress{ {{ personal_info.address }} }
 \ecvtelephone{ {{ personal_info.phone }} }
 {% if personal_info.mobile %}
@@ -14,12 +16,16 @@
 {% if personal_info.homepage %}
 \ecvhomepage{ {{ personal_info.homepage | join(" ") }} }
 {% endif %}
-{% endif %}
+{% endif %} % End if not anonymous
+
+% Display those info anyway
 \ecvdateofbirth{ {{ personal_info.date_of_birth }} }
 \ecvnationality{ {{ personal_info.nationality }} }
 {% if personal_info.gender %}
 \ecvgender{ {{ personal_info.gender }} }
 {% endif %}
+
+\ecvpersonalinfo{true}
 
 \ecvbigitem{Job applied for}{ {{ job_applied_for }} }
 

@@ -72,10 +72,6 @@ def render_template(template_path: Path, data: Dict[str, Any], anonymous: bool =
         template_context = data.copy()
         template_context['anonymous'] = anonymous
         
-        # If anonymous, also anonymize the name
-        if anonymous:
-            template_context['name'] = "[Name withheld for anonymity]"
-        
         return template.render(**template_context)
     except Exception as e:
         print(f"Error rendering template: {e}")
