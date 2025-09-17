@@ -62,12 +62,21 @@ def setup_jinja_environment(template_dir: Path) -> Environment:
     return env
 
 
-def render_template(template_path: Path, data: Dict[str, Any]) -> str:
+def render_template(template_path: Path, data: Dict[str, Any], anonymous: bool = False) -> str:
     """Render the LaTeX template with the provided data."""
     try:
         env = setup_jinja_environment(template_path.parent)
         template = env.get_template(template_path.name)
-        return template.render(**data)
+        
+        # Add the anonymous flag to template context
+        template_context = data.copy()
+        template_context['anonymous'] = anonymous
+        
+        # If anonymous, also anonymize the name
+        if anonymous:
+            template_context['name'] = "[Name withheld for anonymity]"
+        
+        return template.render(**template_context)
     except Exception as e:
         print(f"Error rendering template: {e}")
         sys.exit(1)
@@ -145,9 +154,18 @@ def main():
         action='store_true',
         help='Keep auxiliary LaTeX files after compilation'
     )
+    parser.add_argument(
+        '--anon', 
+        action='store_true',
+        help='Generate anonymous CV (removes personal identifying information for EU tenders)'
+    )
     
     args = parser.parse_args()
     basename = args.basename
+    anonymous = args.anon
+    
+    # Adjust output filename for anonymous version
+    output_suffix = "_anon" if anonymous else ""
     
     # Define paths
     project_root = Path(__file__).parent.parent
@@ -157,8 +175,8 @@ def main():
     
     yaml_file = data_dir / f"{basename}.yml"
     template_file = template_dir / 'cv_template.tex'
-    tex_output = build_dir / f"{basename}.tex"
-    pdf_output = build_dir / f"{basename}.pdf"
+    tex_output = build_dir / f"{basename}{output_suffix}.tex"
+    pdf_output = build_dir / f"{basename}{output_suffix}.pdf"
     
     # Create build directory if it doesn't exist
     build_dir.mkdir(exist_ok=True)
@@ -175,8 +193,11 @@ def main():
     print(f"Loading data from: {yaml_file}")
     data = load_yaml_data(yaml_file)
     
+    if anonymous:
+        print("🔒 Generating anonymous CV (personal identifying information will be hidden)")
+    
     print(f"Rendering template: {template_file}")
-    rendered_tex = render_template(template_file, data)
+    rendered_tex = render_template(template_file, data, anonymous)
     
     print(f"Writing LaTeX file: {tex_output}")
     with open(tex_output, 'w', encoding='utf-8') as f:
@@ -189,7 +210,7 @@ def main():
             
             # Clean up auxiliary files unless --no-cleanup is specified
             if not args.no_cleanup:
-                clean_latex_auxiliary_files(build_dir, basename)
+                clean_latex_auxiliary_files(build_dir, f"{basename}{output_suffix}")
         else:
             print(f"❌ Error: PDF file was not created: {pdf_output}")
             sys.exit(1)

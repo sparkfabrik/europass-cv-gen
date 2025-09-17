@@ -13,16 +13,24 @@ build:
     docker build -t {{image}} .
 
 # Generate a CV from a YAML file
-cv name:
+cv name anon="":
     #!/usr/bin/env bash
-    echo "🔄 Generating CV for {{name}}..."
+    if [ "{{anon}}" = "true" ] || [ "{{anon}}" = "--anon" ]; then
+        echo "🔄 Generating anonymous CV for {{name}}..."
+        anon_flag="--anon"
+        output_suffix="_anon"
+    else
+        echo "🔄 Generating CV for {{name}}..."
+        anon_flag=""
+        output_suffix=""
+    fi
     mkdir -p build
     docker run --rm \
         -v "$(pwd)/data:/app/data:ro" \
         -v "$(pwd)/build:/app/build" \
         -u $(id -u):$(id -g) \
-        {{image}} {{name}}
-    echo "✅ CV generated successfully: build/{{name}}.pdf"
+        {{image}} {{name}} $anon_flag
+    echo "✅ CV generated successfully: build/{{name}}${output_suffix}.pdf"
 
 # List available CV templates
 list:
@@ -42,8 +50,12 @@ ensure-image:
     fi
 
 # Generate CV with automatic image building
-auto name: ensure-image
-    just cv {{name}}
+auto name anon="": ensure-image
+    just cv {{name}} {{anon}}
+
+# Generate anonymous CV (shortcut for EU tenders)
+anon name: ensure-image
+    just cv {{name}} true
 
 # Generate all available CVs
 all: ensure-image
@@ -52,6 +64,17 @@ all: ensure-image
     for template in $(ls data/*.yml 2>/dev/null | sed 's|data/||' | sed 's|\.yml$||'); do
         if [ -n "$template" ]; then
             just cv "$template"
+        fi
+    done
+
+# Generate all CVs in both standard and anonymous versions
+all-anon: ensure-image
+    #!/usr/bin/env bash
+    echo "🚀 Generating all CVs (standard and anonymous versions)..."
+    for template in $(ls data/*.yml 2>/dev/null | sed 's|data/||' | sed 's|\.yml$||'); do
+        if [ -n "$template" ]; then
+            just cv "$template"
+            just cv "$template" true
         fi
     done
 

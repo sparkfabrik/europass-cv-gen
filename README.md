@@ -48,9 +48,19 @@ europass-cv-gen/
 
 | Command | Description |
 |---------|-------------|
-| `just cv <name>` | Generate CV from `data/<name>.yml` |
+| `just cv <name>` | Generate standard CV from `data/<name>.yml` |
+| `just anon <name>` | Generate anonymous CV (for EU tenders) |
 | `just auto <name>` | Generate CV (builds Docker image if needed) |
+| `just cv <name> true` | Generate anonymous CV (alternative syntax) |
 | `just list` | Show available CV templates |
+
+### Anonymous CVs for EU Tenders
+
+For EU public administration tenders, you often need anonymized CVs. The anonymous version:
+
+- ✅ **Removes**: Name, address, phone, email, homepage
+- ✅ **Keeps**: Date of birth, nationality, gender
+- ✅ **Preserves**: All professional information (work experience, education, skills)
 
 ### Utility Commands
 
@@ -58,6 +68,7 @@ europass-cv-gen/
 |---------|-------------|
 | `just build` | Build Docker image manually |
 | `just clean` | Clean build directory |
+| `just all-anon` | Generate all CVs (standard + anonymous versions) |
 | `just all` | Generate all CVs at once |
 | `just purge` | Complete cleanup (files + Docker image) |
 
@@ -67,11 +78,18 @@ europass-cv-gen/
 # List available templates
 just list
 
-# Generate a specific CV (recommended for most users)
+# Generate a standard CV
 just auto john_doe
 
-# Generate all available CVs
-just all
+# Generate an anonymous CV (for EU tenders)
+just anon john_doe
+
+# Generate both versions
+just cv john_doe        # Standard version
+just cv john_doe true   # Anonymous version
+
+# Generate all CVs (standard and anonymous)
+just all-anon
 
 # Clean up generated files
 just clean
@@ -87,11 +105,13 @@ name: Your Name
 personal_info:
   address: "123 Your Street, Your City, 12345, Country"
   phone: "+123 456 789 000"
+  mobile: "+123 555 666 777"  # Optional
   email: "your.email@example.com"
-  homepage:
+  homepage:  # Optional
     - "www.yourwebsite.com"
   date_of_birth: "1990-01-01"
   nationality: "Your Nationality"
+  gender: "Male/Female"  # Required for anonymous CVs
 
 job_applied_for: "Position Title"
 
@@ -126,7 +146,16 @@ skills:
     - "Skill 3"
 ```
 
-## 🔧 Advanced Usage
+## � Output Files
+
+The tool generates different file names based on the type of CV:
+
+- **Standard CV**: `build/<name>.pdf` (e.g., `build/john_doe.pdf`)
+- **Anonymous CV**: `build/<name>_anon.pdf` (e.g., `build/john_doe_anon.pdf`)
+
+Both versions are generated from the same YAML data file, ensuring consistency while meeting different requirements.
+
+## �🔧 Advanced Usage
 
 ### Running Without Just
 
@@ -136,12 +165,19 @@ If you prefer to use Docker directly:
 # Build the image
 docker build -t cv-generator .
 
-# Generate a CV
+# Generate a standard CV
 docker run --rm \
     -v "$(pwd)/data:/app/data:ro" \
     -v "$(pwd)/build:/app/build" \
     -u $(id -u):$(id -g) \
     cv-generator your_name
+
+# Generate an anonymous CV
+docker run --rm \
+    -v "$(pwd)/data:/app/data:ro" \
+    -v "$(pwd)/build:/app/build" \
+    -u $(id -u):$(id -g) \
+    cv-generator your_name --anon
 ```
 
 ### Python Script Only

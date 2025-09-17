@@ -4,12 +4,22 @@
 \begin{europasscv}
 
 \ecvname{ {{ name }} }
+{% if not anonymous %}
 \ecvaddress{ {{ personal_info.address }} }
 \ecvtelephone{ {{ personal_info.phone }} }
+{% if personal_info.mobile %}
+\ecvmobile{ {{ personal_info.mobile }} }
+{% endif %}
 \ecvemail{ {{ personal_info.email }} }
+{% if personal_info.homepage %}
 \ecvhomepage{ {{ personal_info.homepage | join(" ") }} }
+{% endif %}
+{% endif %}
 \ecvdateofbirth{ {{ personal_info.date_of_birth }} }
 \ecvnationality{ {{ personal_info.nationality }} }
+{% if personal_info.gender %}
+\ecvgender{ {{ personal_info.gender }} }
+{% endif %}
 
 \ecvbigitem{Job applied for}{ {{ job_applied_for }} }
 
