@@ -15,14 +15,20 @@ This tool allows you to generate beautiful PDF CVs in the Europass format by sim
 
 ### Generate Your First CV
 
-1. Create or edit a YAML file in the `data/` directory (see `data/person_cv_template.yml` for reference)
-2. Generate your CV:
+1. Create a new empty template 
+
+   ```bash
+   just init your_name
+   ```
+
+2. Edit `data/your_name.yml` (see `data/person_cv_template.yml` for reference)
+3. Generate your CV:
 
    ```bash
    just cv your_name
    ```
 
-3. Find your PDF in the `build/` directory
+4. Find your PDF in the `build/` directory
 
 That's it! 🎉
 
@@ -30,16 +36,25 @@ That's it! 🎉
 
 ```text
 europass-cv-gen/
-├── data/                    # YAML data files for CVs
-│   └── person_cv_template.yml
-├── template/               # LaTeX templates
-│   └── cv_template.tex
-├── scripts/               # Python generation scripts
-│   └── generate_cv.py
-├── build/                 # Generated PDFs and temporary files
-├── justfile              # Task runner configuration
-├── Dockerfile            # Docker container configuration
-└── requirements.txt      # Python dependencies
+├── data/                        # YAML data files for CVs
+│   └── person_cv_template.yml   # Example reference file
+├── template/                    # LaTeX templates and schemas
+│   ├── cv_template.tex          # Main LaTeX template
+│   ├── cv_data.tpl.yml          # Empty template for new CVs
+│   └── cv_validation_schema.yml # JSONSchema for validation
+├── scripts/                     # Python generation scripts
+│   ├── generate_cv.py           # Main CV generator
+│   ├── cv_validator.py          # YAML validation with fuzzy suggestions
+│   └── validation_result.py     # Validation result classes
+├── build/                       # Generated PDFs and temporary files
+├── docker/                      # Docker-related files
+├── .gitignore                   # Git ignore rules
+├── .dockerignore                # Docker ignore rules
+├── justfile                     # Task runner configuration
+├── Dockerfile                   # Docker container configuration
+├── LICENSE                      # Project license
+├── README.md                    # This file
+└── requirements.txt             # Python dependencies
 ```
 
 ## 🛠️ Available Commands
@@ -50,13 +65,15 @@ europass-cv-gen/
 |---------|-------------|
 | `just cv <name>` | Generate standard CV from `data/<name>.yml` |
 | `just cv <name> --anon` | Generate anonymous CV (for EU tenders) |
-| `just cv <name> --force` | Generate CV bypassing validation warnings/errors |
+| `just cv <name> --force` | Generate CV bypassing validation warnings/errors (*) |
 | `just cv <name> --dry-run` | Validate CV YAML file only (no PDF generation) |
-| `just all` | Generate all CVs in data/ directory |
+| `just all` | Generate all CVs in `data/` directory |
 | `just all --anon` | Generate all CVs in both standard and anonymous versions |
 | `just all --force` | Generate all CVs bypassing validation errors |
 | `just init <name>` | **NEW!** Initialize new CV from template |
 | `just list` | Show available CV templates |
+
+_(*) Can result in fatal errors, depending on the problems on the source file._
 
 ### 🔍 NEW: CV Validation System
 
@@ -93,7 +110,7 @@ just list
 # Initialize a new CV from template
 just init john_doe
 
-# Validate a CV file (dry-run mode)
+# Validate a CV file without generating PDF (dry-run mode)
 just cv john_doe --dry-run
 
 # Generate a standard CV (with automatic validation)
