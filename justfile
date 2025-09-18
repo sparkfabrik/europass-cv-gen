@@ -13,22 +13,43 @@ build:
     docker build -t {{image}} .
 
 # Generate a CV from a YAML file
-cv name anon="" force="":
+cv name *flags: ensure-image
     #!/usr/bin/env bash
-    if [ "{{anon}}" = "true" ] || [ "{{anon}}" = "--anon" ]; then
-        echo "🔄 Generating anonymous CV for {{name}}..."
-        anon_flag="--anon"
-        output_suffix="_anon"
-    else
-        echo "🔄 Generating CV for {{name}}..."
-        anon_flag=""
-        output_suffix=""
+    anon_flag=""
+    force_flag=""
+    dry_run_flag=""
+    output_suffix=""
+
+    # Process flags
+    for flag in {{flags}}; do
+        case "$flag" in
+            --anon)
+                anon_flag="--anon"
+                output_suffix="_anon"
+                ;;
+            --force)
+                force_flag="--force"
+                ;;
+            --dry-run)
+                dry_run_flag="--dry-run"
+                ;;
+        esac
+    done
+
+    if [ -n "$dry_run_flag" ]; then
+        echo "� Validating CV: {{name}}..."
+        docker run --rm \
+            -v "$(pwd)/data:/app/data:ro" \
+            -v "$(pwd)/template:/app/template:ro" \
+            -u $(id -u):$(id -g) \
+            {{image}} {{name}} --dry-run
+        exit $?
     fi
 
-    if [ "{{force}}" = "true" ] || [ "{{force}}" = "--force" ]; then
-        force_flag="--force"
+    if [ -n "$anon_flag" ]; then
+        echo "🔄 Generating anonymous CV for {{name}}..."
     else
-        force_flag=""
+        echo "🔄 Generating CV for {{name}}..."
     fi
 
     mkdir -p build
@@ -81,46 +102,39 @@ ensure-image:
         just build; \
     fi
 
-# Generate CV with automatic image building
-auto name anon="": ensure-image
-    just cv {{name}} {{anon}}
-
-# Generate anonymous CV (shortcut for EU tenders)
-anon name: ensure-image
-    just cv {{name}} true
-
-# Validate CV YAML file only (dry-run mode)
-validate name: ensure-image
-    #!/usr/bin/env bash
-    echo "🔍 Validating CV: {{name}}..."
-    docker run --rm \
-        -v "$(pwd)/data:/app/data:ro" \
-        -v "$(pwd)/template:/app/template:ro" \
-        -u $(id -u):$(id -g) \
-        {{image}} {{name}} --validate
-
-# Generate CV with force flag (bypass validation errors)
-force name anon="": ensure-image
-    just cv {{name}} {{anon}} true
-
 # Generate all available CVs
-all: ensure-image
+all *flags: ensure-image
     #!/usr/bin/env bash
-    echo "🚀 Generating all CVs..."
-    for template in $(ls data/*.yml 2>/dev/null | sed 's|data/||' | sed 's|\.yml$||'); do
-        if [ -n "$template" ]; then
-            just cv "$template"
-        fi
+    anon_flag=""
+    force_flag=""
+
+    # Process flags
+    for flag in {{flags}}; do
+        case "$flag" in
+            --anon)
+                anon_flag="--anon"
+                echo "🚀 Generating all CVs (standard and anonymous versions)..."
+                ;;
+            --force)
+                force_flag="--force"
+                ;;
+        esac
     done
 
-# Generate all CVs in both standard and anonymous versions
-all-anon: ensure-image
-    #!/usr/bin/env bash
-    echo "🚀 Generating all CVs (standard and anonymous versions)..."
+    if [ -z "$anon_flag" ]; then
+        echo "🚀 Generating all CVs..."
+    fi
+
     for template in $(ls data/*.yml 2>/dev/null | sed 's|data/||' | sed 's|\.yml$||'); do
         if [ -n "$template" ]; then
-            just cv "$template"
-            just cv "$template" true
+            if [ -n "$anon_flag" ]; then
+                # Generate both standard and anonymous versions
+                just cv "$template" $force_flag
+                just cv "$template" --anon $force_flag
+            else
+                # Generate standard version only
+                just cv "$template" $force_flag
+            fi
         fi
     done
 

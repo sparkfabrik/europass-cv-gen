@@ -49,11 +49,13 @@ europass-cv-gen/
 | Command | Description |
 |---------|-------------|
 | `just cv <name>` | Generate standard CV from `data/<name>.yml` |
-| `just anon <name>` | Generate anonymous CV (for EU tenders) |
-| `just auto <name>` | Generate CV (builds Docker image if needed) |
-| `just cv <name> true` | Generate anonymous CV (alternative syntax) |
-| `just validate <name>` | **NEW!** Validate CV YAML file only (dry-run mode) |
-| `just force <name>` | **NEW!** Generate CV bypassing validation warnings/errors |
+| `just cv <name> --anon` | Generate anonymous CV (for EU tenders) |
+| `just cv <name> --force` | Generate CV bypassing validation warnings/errors |
+| `just cv <name> --dry-run` | Validate CV YAML file only (no PDF generation) |
+| `just all` | Generate all CVs in data/ directory |
+| `just all --anon` | Generate all CVs in both standard and anonymous versions |
+| `just all --force` | Generate all CVs bypassing validation errors |
+| `just init <name>` | **NEW!** Initialize new CV from template |
 | `just list` | Show available CV templates |
 
 ### 🔍 NEW: CV Validation System
@@ -80,8 +82,6 @@ For EU public administration tenders, you often need anonymized CVs. The anonymo
 |---------|-------------|
 | `just build` | Build Docker image manually |
 | `just clean` | Clean build directory |
-| `just all-anon` | Generate all CVs (standard + anonymous versions) |
-| `just all` | Generate all CVs at once |
 | `just purge` | Complete cleanup (files + Docker image) |
 
 ### Examples
@@ -90,24 +90,26 @@ For EU public administration tenders, you often need anonymized CVs. The anonymo
 # List available templates
 just list
 
+# Initialize a new CV from template
+just init john_doe
+
 # Validate a CV file (dry-run mode)
-just validate john_doe
+just cv john_doe --dry-run
 
 # Generate a standard CV (with automatic validation)
-just auto john_doe
+just cv john_doe
 
 # Generate an anonymous CV (for EU tenders)
-just anon john_doe
+just cv john_doe --anon
 
-# Generate both versions
-just cv john_doe        # Standard version
-just cv john_doe true   # Anonymous version
+# Generate with force (bypass validation errors)
+just cv john_doe --force
 
-# Force generation despite validation warnings
-just force john_doe
+# Generate all CVs
+just all
 
-# Generate all CVs (standard and anonymous)
-just all-anon
+# Generate all CVs in both standard and anonymous versions
+just all --anon
 
 # Clean up generated files
 just clean
@@ -117,7 +119,7 @@ just clean
 
 ```bash
 # Validate a CV and see detailed report
-just validate person_cv_template
+just cv person_cv_template --dry-run
 
 # Example validation output:
 # ✅ CV validation passed successfully!
