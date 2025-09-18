@@ -45,6 +45,30 @@ list:
     @echo "📋 Available CV templates:"
     @ls -1 data/*.yml 2>/dev/null | sed 's|data/||' | sed 's|\.yml$||' | sed 's/^/  - /' || echo "  No templates found in data/ directory"
 
+# Initialize a new CV from template
+init name:
+    #!/usr/bin/env bash
+    if [ -f "data/{{name}}.yml" ]; then
+        echo "❌ Error: CV file 'data/{{name}}.yml' already exists"
+        echo "   Choose a different name or remove the existing file first"
+        exit 1
+    fi
+
+    if [ ! -f "template/cv_data.tpl.yml" ]; then
+        echo "❌ Error: Template file 'template/cv_data.tpl.yml' not found"
+        exit 1
+    fi
+
+    # Create data directory if it doesn't exist
+    mkdir -p data
+
+    # Copy template to new CV file
+    cp "template/cv_data.tpl.yml" "data/{{name}}.yml"
+
+    echo "✅ New CV initialized: data/{{name}}.yml"
+    echo "📝 Edit the file to add your information, then generate with:"
+    echo "   just cv {{name}}"
+
 # Clean build directory
 clean:
     rm -rf build/*

@@ -1,0 +1,69 @@
+# Europass CV Template
+# Copy this template to data/<name>.yml and fill in your information
+# Use 'just init <name>' to automatically create a new CV file
+
+name: ""
+
+personal_info:
+  address: ""
+  phone: ""
+  mobile: ""  # Optional
+  email: ""
+  homepage:  # Optional - list of websites
+    - ""
+  im:  # Optional - instant messaging contacts
+    - platform: ""  # Skype, Signal, Telegram, WhatsApp, Discord, LinkedIn, Twitter
+      handle: ""
+  date_of_birth: ""  # Format: YYYY-MM-DD
+  nationality: ""
+  gender: ""  # Male, Female, Other, "Prefer not to say"
+
+job_applied_for: ""
+
+work_experience:
+  - period: ""  # Format: "Month YYYY – Month YYYY" or "Month YYYY – Present"
+    title: ""
+    employer: ""
+    location: ""  # City, Country
+    description: ""
+
+education:
+  - period: ""  # Format: "YYYY – YYYY"
+    degree: ""
+    institution: ""
+    level: ""  # Format: "ISCED X" (where X is 0-8)
+    details: ""  # Optional - can be string or list
+
+languages:
+  mother_tongue: ""
+  foreign_languages:  # Optional
+    - language: ""
+      listening: ""    # Optional: A1, A2, B1, B2, C1, C2
+      reading: ""      # Optional: A1, A2, B1, B2, C1, C2
+      spoken_interaction: ""  # Optional: A1, A2, B1, B2, C1, C2
+      spoken_production: ""   # Optional: A1, A2, B1, B2, C1, C2
+      writing: ""      # Optional: A1, A2, B1, B2, C1, C2
+      certificate: "" # Optional
+
+skills:
+  communication:  # Optional
+    - ""
+  organisational:  # Optional
+    - ""
+  digital_competence:  # Optional
+    information_processing: ""  # Basic, Independent, Proficient
+    communication: ""           # Basic, Independent, Proficient
+    content_creation: ""        # Basic, Independent, Proficient
+    safety: ""                  # Basic, Independent, Proficient
+    problem_solving: ""         # Basic, Independent, Proficient
+  computer:
+    - ""
+  other:  # Optional
+    - ""
+
+driving_license: ""  # Optional - Format: "B" or "A+B" etc.
+
+publications:  # Optional
+  - title: ""
+    year: 2024
+    journal: ""
