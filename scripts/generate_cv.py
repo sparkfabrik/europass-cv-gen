@@ -26,6 +26,7 @@ import tempfile
 import shutil
 from pathlib import Path
 from typing import Dict, Any
+from datetime import datetime
 
 import yaml
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -220,7 +221,7 @@ def compile_latex_to_pdf(tex_file: Path, output_dir: Path) -> bool:
 
 def clean_latex_auxiliary_files(build_dir: Path, basename: str):
     """Clean up auxiliary files created during LaTeX compilation."""
-    extensions_to_clean = ['.aux', '.log', '.fls', '.fdb_latexmk', '.synctex.gz']
+    extensions_to_clean = ['.aux', '.log', '.fls', '.fdb_latexmk', '.synctex.gz', '.out', '.tex']
 
     for ext in extensions_to_clean:
         aux_file = build_dir / f"{basename}{ext}"
@@ -258,15 +259,25 @@ def main():
         action='store_true',
         help='Generate PDF even if validation has warnings or errors'
     )
+    parser.add_argument(
+        '--timestamp',
+        action='store_true',
+        help='Prepend YYYYMMDD_ timestamp to output filename'
+    )
 
     args = parser.parse_args()
     basename = args.basename
     anonymous = args.anon
     dry_run = args.validate
     force = args.force
+    timestamp = args.timestamp
 
-    # Adjust output filename for anonymous version
+    # Generate timestamp prefix if requested
+    timestamp_prefix = datetime.now().strftime("%Y%m%d_") if timestamp else ""
+
+    # Adjust output filename for anonymous version and timestamp
     output_suffix = "_anon" if anonymous else ""
+    output_basename = f"{timestamp_prefix}{basename}{output_suffix}"
 
     # Define paths
     project_root = Path(__file__).parent.parent
@@ -276,8 +287,8 @@ def main():
 
     yaml_file = data_dir / f"{basename}.yml"
     template_file = template_dir / 'cv_template.tex'
-    tex_output = build_dir / f"{basename}{output_suffix}.tex"
-    pdf_output = build_dir / f"{basename}{output_suffix}.pdf"
+    tex_output = build_dir / f"{output_basename}.tex"
+    pdf_output = build_dir / f"{output_basename}.pdf"
 
     # Validate input files exist
     if not yaml_file.exists():
@@ -318,7 +329,7 @@ def main():
 
             # Clean up auxiliary files unless --no-cleanup is specified
             if not args.no_cleanup:
-                clean_latex_auxiliary_files(build_dir, f"{basename}{output_suffix}")
+                clean_latex_auxiliary_files(build_dir, output_basename)
         else:
             print(f"❌ Error: PDF file was not created: {pdf_output}")
             sys.exit(1)

@@ -13,16 +13,19 @@ build:
     docker build -t {{image}} .
 
 # Generate a CV from a YAML file
-cv name *flags: ensure-image
+cv *args: ensure-image
     #!/usr/bin/env bash
     anon_flag=""
     force_flag=""
     dry_run_flag=""
+    timestamp_flag=""
     output_suffix=""
+    timestamp_prefix=""
+    cv_name=""
 
-    # Process flags
-    for flag in {{flags}}; do
-        case "$flag" in
+    # Process arguments to separate name from flags
+    for arg in {{args}}; do
+        case "$arg" in
             --anon)
                 anon_flag="--anon"
                 output_suffix="_anon"
@@ -33,23 +36,37 @@ cv name *flags: ensure-image
             --dry-run)
                 dry_run_flag="--dry-run"
                 ;;
+            --timestamp)
+                timestamp_flag="--timestamp"
+                timestamp_prefix="$(date +%Y%m%d)_"
+                ;;
+            *)
+                # This is the CV name
+                cv_name="$arg"
+                ;;
         esac
     done
 
+    if [ -z "$cv_name" ]; then
+        echo "❌ Error: CV name is required"
+        echo "Usage: just cv [--timestamp] [--anon] [--force] <name>"
+        exit 1
+    fi
+
     if [ -n "$dry_run_flag" ]; then
-        echo "� Validating CV: {{name}}..."
+        echo "🔍 Validating CV: $cv_name..."
         docker run --rm \
             -v "$(pwd)/data:/app/data:ro" \
             -v "$(pwd)/template:/app/template:ro" \
             -u $(id -u):$(id -g) \
-            {{image}} {{name}} --dry-run
+            {{image}} $cv_name --dry-run
         exit $?
     fi
 
     if [ -n "$anon_flag" ]; then
-        echo "🔄 Generating anonymous CV for {{name}}..."
+        echo "🔄 Generating anonymous CV for $cv_name..."
     else
-        echo "🔄 Generating CV for {{name}}..."
+        echo "🔄 Generating CV for $cv_name..."
     fi
 
     mkdir -p build
@@ -58,8 +75,8 @@ cv name *flags: ensure-image
         -v "$(pwd)/template:/app/template:ro" \
         -v "$(pwd)/build:/app/build" \
         -u $(id -u):$(id -g) \
-        {{image}} {{name}} $anon_flag $force_flag
-    echo "✅ CV generated successfully: build/{{name}}${output_suffix}.pdf"
+        {{image}} $cv_name $anon_flag $force_flag $timestamp_flag
+    echo "✅ CV generated successfully: build/${timestamp_prefix}${cv_name}${output_suffix}.pdf"
 
 # List available CV templates
 list:
