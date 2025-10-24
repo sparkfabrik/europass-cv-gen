@@ -33,7 +33,7 @@ properties:
       phone:
         type: string
         description: "Primary phone number (hidden in anonymous mode)"
-        pattern: "^\\+\\d{1,4}\\s\\d{3}\\s\\d{3}\\s\\d{3}$"
+        pattern: "^\\+\\d{1,4}\\s\\d{3}\\s[\\d\\.]+$"
       mobile:
         type: string
         description: "Mobile phone number (optional, hidden in anonymous mode)"
@@ -101,7 +101,7 @@ properties:
         period:
           type: string
           description: "Employment period (e.g., 'January 2020 – Present')"
-          pattern: "^.+ – .+$"
+          pattern: "^\\s*(?:[A-Za-z\\.]+\\s+)?\\d{4}\\s*[-–]\\s*(?:[A-Za-z\\.]+\\s+)?(?:\\d{4}|Present)\\s*$"
           minLength: 5
           maxLength: 50
         title:
@@ -138,7 +138,7 @@ properties:
         period:
           type: string
           description: "Education period (e.g., '2015 – 2018')"
-          pattern: "^\\d{4} – \\d{4}$"
+          pattern: "^\\s*(?:[A-Za-z\\.]+\\s+)?\\d{4}\\s*[-–]\\s*(?:[A-Za-z\\.]+\\s+)?\\d{4}\\s*$"
         degree:
           type: string
           description: "Degree or qualification obtained"

@@ -53,6 +53,45 @@ def load_yaml_data(yaml_path: Path) -> Dict[str, Any]:
         sys.exit(1)
 
 
+def escape_latex(text: str) -> str:
+    """Escape special LaTeX characters in text."""
+    if not isinstance(text, str):
+        return text
+
+    # Dictionary of LaTeX special characters and their escaped versions
+    # Note: backslash is NOT escaped here because it's commonly used in LaTeX commands
+    # and escaping it would break things like \& which are already escaped
+    latex_special_chars = {
+        '&': r'\&',
+        '%': r'\%',
+        '$': r'\$',
+        '#': r'\#',
+        '_': r'\_',
+        '{': r'\{',
+        '}': r'\}',
+        '~': r'\textasciitilde{}',
+        '^': r'\textasciicircum{}',
+    }
+
+    result = text
+    for char, escaped in latex_special_chars.items():
+        result = result.replace(char, escaped)
+
+    return result
+
+
+def escape_latex_recursive(data: Any) -> Any:
+    """Recursively escape LaTeX special characters in all strings within the data structure."""
+    if isinstance(data, dict):
+        return {key: escape_latex_recursive(value) for key, value in data.items()}
+    elif isinstance(data, list):
+        return [escape_latex_recursive(item) for item in data]
+    elif isinstance(data, str):
+        return escape_latex(data)
+    else:
+        return data
+
+
 def validate_and_load_yaml_data(yaml_path: Path, force: bool = False, dry_run: bool = False) -> Dict[str, Any]:
     """Load and validate YAML data, with optional validation bypass."""
     # Load the data first
@@ -62,7 +101,7 @@ def validate_and_load_yaml_data(yaml_path: Path, force: bool = False, dry_run: b
     if not VALIDATION_AVAILABLE:
         if not dry_run:
             print("⚠️  Skipping validation (dependencies not installed)")
-        return data
+        return escape_latex_recursive(data)
 
     # Perform validation
     print(f"🔍 Validating CV data...")
@@ -95,12 +134,12 @@ def validate_and_load_yaml_data(yaml_path: Path, force: bool = False, dry_run: b
             print("\n" + validation_result.format_detailed_report())
             print("⚠️  Proceeding with PDF generation despite warnings")
 
-    return data
-
-
+    # Escape LaTeX special characters after validation
+    return escape_latex_recursive(data)
 def setup_jinja_environment(template_dir: Path) -> Environment:
     """Set up Jinja2 environment for LaTeX templates."""
     # Configure Jinja2 for LaTeX (avoid conflicts with LaTeX syntax)
+    # Note: autoescape is disabled because we manually escape LaTeX special characters
     env = Environment(
         loader=FileSystemLoader(template_dir),
         block_start_string='{%',
@@ -109,7 +148,7 @@ def setup_jinja_environment(template_dir: Path) -> Environment:
         variable_end_string='}}',
         comment_start_string='{#',
         comment_end_string='#}',
-        autoescape=select_autoescape(['tex']),
+        autoescape=False,  # Disabled - we manually escape LaTeX characters
         trim_blocks=True,
         lstrip_blocks=True
     )
