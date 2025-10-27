@@ -65,6 +65,7 @@ europass-cv-gen/
 |---------|-------------|
 | `just cv <name>` | Generate standard CV from `data/<name>.yml` |
 | `just cv <name> --anon` | Generate anonymous CV (for EU tenders) |
+| `just cv <name> --timestamp` | Generate CV with YYYYMMDD_ prefix |
 | `just cv <name> --force` | Generate CV bypassing validation warnings/errors (*) |
 | `just cv <name> --dry-run` | Validate CV YAML file only (no PDF generation) |
 | `just all` | Generate all CVs in `data/` directory |
@@ -118,6 +119,12 @@ just cv john_doe
 
 # Generate an anonymous CV (for EU tenders)
 just cv john_doe --anon
+
+# Generate with timestamp prefix (e.g., 20251024_john_doe.pdf)
+just cv john_doe --timestamp
+
+# Combine flags: timestamped anonymous CV
+just cv john_doe --timestamp --anon
 
 # Generate with force (bypass validation errors)
 just cv john_doe --force
@@ -267,10 +274,12 @@ python scripts/generate_cv.py your_name
 The Docker container:
 
 - Uses official Python 3.11 slim image
+- Includes validation dependencies (jsonschema, fuzzywuzzy, python-Levenshtein)
 - Installs LaTeX distribution (texlive) for PDF compilation
 - Runs as non-root user for security
 - Preserves file ownership when mounting volumes
-- Automatically cleans up auxiliary LaTeX files
+- Automatically cleans up auxiliary LaTeX files (`.aux`, `.log`, `.out`, `.tex`, etc.)
+  - Use `--no-cleanup` flag to preserve temporary files for debugging
 
 ## 🤝 For Team Usage
 
@@ -306,6 +315,23 @@ The validation system uses a comprehensive JSONSchema defined in `template/cv_va
 
 You can customize the schema to match your specific CV requirements.
 
+## ⚙️ Features
+
+### LaTeX Special Character Handling
+
+The tool automatically escapes LaTeX special characters in your YAML data, so you can use characters like:
+- `&` (ampersand) in job titles like "Co-Founder & Software Developer"
+- `%` (percent), `$` (dollar), `#` (hash), `_` (underscore)
+- `{}` (braces), `~` (tilde), `^` (caret)
+
+No need to manually escape these characters in your YAML files!
+
+### Timestamped Output
+
+Use the `--timestamp` flag to create versioned CVs with automatic date prefixes:
+- `just cv john_doe --timestamp` → `20251024_john_doe.pdf`
+- Perfect for maintaining CV history and tracking changes over time
+
 ## 🆘 Troubleshooting
 
 ### Common Issues
@@ -314,6 +340,8 @@ You can customize the schema to match your specific CV requirements.
 2. **"Just not found"**: Install with `brew install just` (macOS)
 3. **Permission errors**: The tool automatically handles file permissions
 4. **LaTeX errors**: Check your YAML syntax and data completeness
+5. **Validation errors**: Use `just cv <name> --dry-run` to see detailed validation report
+6. **Special characters in data**: The tool automatically escapes LaTeX special characters like `&`, `%`, `$`, etc.
 
 ### Getting Help
 
