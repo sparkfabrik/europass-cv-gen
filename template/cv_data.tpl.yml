@@ -2,68 +2,68 @@
 # Copy this template to data/<name>.yml and fill in your information
 # Use 'just init <name>' to automatically create a new CV file
 
-name: ""
+name: ""  # Required - 1-100 characters
 
 personal_info:
-  address: ""
-  phone: ""
-  mobile: ""  # Optional
-  email: ""
-  homepage:  # Optional - list of websites
-    - ""
-  im:  # Optional - instant messaging contacts
-    - platform: ""  # Skype, Signal, Telegram, WhatsApp, Discord, LinkedIn, Twitter
-      handle: ""
-  date_of_birth: ""  # Format: YYYY-MM-DD
-  nationality: ""
-  gender: ""  # Male, Female, Other, "Prefer not to say"
+  address: ""  # Optional - 10-200 characters (hidden in anonymous mode)
+  phone: ""  # Optional - Format: "+123 456 789.01.23" (hidden in anonymous mode)
+  mobile: ""  # Optional - Format: "+123 456 789 012" (hidden in anonymous mode)
+  email: ""  # Optional - Valid email format (hidden in anonymous mode)
+  homepage:  # Optional - list of websites (1-5 URLs, hidden in anonymous mode)
+    - ""  # Format: www.example.com or https://example.com
+  im:  # Optional - instant messaging contacts (max 10, hidden in anonymous mode)
+    - platform: ""  # Required - One of: Skype, Signal, Telegram, WhatsApp, Discord, LinkedIn, Twitter
+      handle: ""  # Required - 1-50 characters
+  date_of_birth: ""  # Required - Format: YYYY-MM-DD (e.g., 1990-01-15)
+  nationality: ""  # Required - 1-50 characters
+  gender: ""  # Required - One of: Male, Female, Other, "Prefer not to say"
 
-job_applied_for: ""
+job_applied_for: ""  # Optional - 5-200 characters
 
-work_experience:
-  - period: ""  # Format: "Month YYYY – Month YYYY" or "Month YYYY – Present"
-    title: ""
-    employer: ""
-    location: ""  # City, Country
-    description: ""
+work_experience:  # Required - at least 1 entry, max 20
+  - period: ""  # Required - Format: "January 2020 – Present" or "Jan. 2020 – Dec. 2023"
+    title: ""  # Required - 1-100 characters
+    employer: ""  # Required - 1-100 characters
+    location: ""  # Required - 1-100 characters (City, Country)
+    description: ""  # Required - 10-1000 characters
 
-education:
-  - period: ""  # Format: "YYYY – YYYY"
-    degree: ""
-    institution: ""
-    level: ""  # Format: "ISCED X" (where X is 0-8)
-    details: ""  # Optional - can be string or list
+education:  # Required - at least 1 entry, max 15
+  - period: ""  # Required - Format: "2015 – 2018" or "Jan. 2015 – Dec. 2018"
+    degree: ""  # Required - 1-150 characters
+    institution: ""  # Required - 1-150 characters
+    level: ""  # Optional - Format: "ISCED 6" (where number is 0-8)
+    details: ""  # Optional - can be string (max 500 chars) or list (max 10 items, 100 chars each)
 
 languages:
-  mother_tongue: ""
-  foreign_languages:  # Optional
-    - language: ""
-      listening: ""    # Optional: A1, A2, B1, B2, C1, C2
-      reading: ""      # Optional: A1, A2, B1, B2, C1, C2
-      spoken_interaction: ""  # Optional: A1, A2, B1, B2, C1, C2
-      spoken_production: ""   # Optional: A1, A2, B1, B2, C1, C2
-      writing: ""      # Optional: A1, A2, B1, B2, C1, C2
-      certificate: "" # Optional
+  mother_tongue: ""  # Required - 1-50 characters
+  foreign_languages:  # Optional - max 10 languages
+    - language: ""  # Required - 1-50 characters
+      listening: ""    # Optional - One of: A1, A2, B1, B2, C1, C2 (CEFR levels)
+      reading: ""      # Optional - One of: A1, A2, B1, B2, C1, C2 (CEFR levels)
+      spoken_interaction: ""  # Optional - One of: A1, A2, B1, B2, C1, C2 (CEFR levels)
+      spoken_production: ""   # Optional - One of: A1, A2, B1, B2, C1, C2 (CEFR levels)
+      writing: ""      # Optional - One of: A1, A2, B1, B2, C1, C2 (CEFR levels)
+      certificate: "" # Optional - max 100 characters
 
-skills:
-  communication:  # Optional
+skills:  # Optional section
+  communication:  # Optional - max 10 items, 1-200 characters each
     - ""
-  organisational:  # Optional
+  organisational:  # Optional - max 10 items, 1-200 characters each
     - ""
   digital_competence:  # Optional
-    information_processing: ""  # Basic, Independent, Proficient
-    communication: ""           # Basic, Independent, Proficient
-    content_creation: ""        # Basic, Independent, Proficient
-    safety: ""                  # Basic, Independent, Proficient
-    problem_solving: ""         # Basic, Independent, Proficient
-  computer:
+    information_processing: ""  # Optional - One of: Basic, Independent, Proficient
+    communication: ""           # Optional - One of: Basic, Independent, Proficient
+    content_creation: ""        # Optional - One of: Basic, Independent, Proficient
+    safety: ""                  # Optional - One of: Basic, Independent, Proficient
+    problem_solving: ""         # Optional - One of: Basic, Independent, Proficient
+  computer:  # Optional but if present, requires at least 1 item - max 20 items, 1-100 chars each
     - ""
-  other:  # Optional
+  other:  # Optional - max 15 items, 1-200 characters each
     - ""
 
-driving_license: ""  # Optional - Format: "B" or "A+B" etc.
+driving_license: ""  # Optional - Format: "B" or "A+B" or "C1+E" (max 20 chars)
 
-publications:  # Optional
-  - title: ""
-    year: 2024
-    journal: ""
+publications:  # Optional - max 50 entries
+  - title: ""  # Required - 1-200 characters
+    year: 2024  # Required - integer between 1950 and 2030
+    journal: ""  # Required - 1-150 characters
