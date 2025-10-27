@@ -94,6 +94,10 @@ cython_debug/
 build/*
 !build/.gitkeep
 
+# Data directory - ignore all CV files except the template
+data/*
+!data/person_cv_template.yml
+
 # Docker
 .dockerignore
 
