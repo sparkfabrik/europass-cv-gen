@@ -98,9 +98,10 @@ For EU public administration tenders, you often need anonymized CVs. The anonymo
 
 | Command | Description |
 |---------|-------------|
-| `just build` | Build Docker image manually |
-| `just clean` | Clean build directory |
-| `just purge` | Complete cleanup (files + Docker image) |
+| `just build`  | Build Docker image manually |
+| `just clean`  | Clean build directory |
+| `just purge`  | Complete cleanup (files + Docker image) |
+| `just update` | Download the latest version from GitHub |
 
 ### Examples
 

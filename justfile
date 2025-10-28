@@ -171,3 +171,8 @@ remove-image:
 # Full cleanup (build files and Docker image)
 purge: clean remove-image
     @echo "🧽 Full cleanup completed"
+
+# Update the package directly from GitHub
+update:
+    git pull origin main
+    @echo "🔄 Package updated from GitHub"
