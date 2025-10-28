@@ -76,7 +76,12 @@ cv *args: ensure-image
         -v "$(pwd)/build:/app/build" \
         -u $(id -u):$(id -g) \
         {{image}} $cv_name $anon_flag $force_flag $timestamp_flag
-    echo "✅ CV generated successfully: build/${timestamp_prefix}${cv_name}${output_suffix}.pdf"
+    
+    if [ $? -eq 0 ]; then
+        echo "✅ CV generated successfully: build/${timestamp_prefix}${cv_name}${output_suffix}.pdf"
+    else
+        exit 1
+    fi
 
 # List available CV templates
 list:
