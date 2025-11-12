@@ -70,6 +70,21 @@ education:
       - Human-Computer Interaction
       - Databases
 
+certifications:
+  - period: March 2023 – March 2026
+    name: "Project Management Professional (PMP)"
+    issuer: "Project Management Institute"
+    details: "Credential ID: 12345678. Demonstrates proficiency in leading and directing projects and teams."
+
+  - period: June 2021 – Present
+    name: "AWS Certified Solutions Architect - Associate"
+    issuer: "Amazon Web Services"
+    details: "Validation number: ABC123XYZ. Certified in designing distributed systems on AWS."
+
+  - period: November 2020
+    name: "Certified ScrumMaster (CSM)"
+    issuer: "Scrum Alliance"
+
 languages:
   mother_tongue: Countrylish
   foreign_languages:
