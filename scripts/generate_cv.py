@@ -24,6 +24,7 @@ import sys
 import subprocess
 import tempfile
 import shutil
+import html
 from pathlib import Path
 from typing import Dict, Any
 from datetime import datetime
@@ -88,7 +89,9 @@ def escape_latex_recursive(data: Any) -> Any:
     elif isinstance(data, list):
         return [escape_latex_recursive(item) for item in data]
     elif isinstance(data, str):
-        return escape_latex(data)
+        # First unescape any HTML entities, then escape for LaTeX
+        unescaped = html.unescape(data)
+        return escape_latex(unescaped)
     else:
         return data
 
@@ -173,13 +176,37 @@ def render_template(template_path: Path, data: Dict[str, Any], anonymous: bool =
 
 
 def compile_latex_to_pdf(tex_file: Path, output_dir: Path) -> bool:
-    """Compile LaTeX file to PDF using pdflatex."""
+    """Compile LaTeX file to PDF using pdflatex (runs twice to resolve references)."""
     try:
-        # Try pdflatex first
+        # Try pdflatex first - run twice to resolve page references
+        pdflatex_success = True
+        for pass_num in range(1, 3):
+            result = subprocess.run([
+                'pdflatex',
+                '-interaction=nonstopmode',
+                '-output-directory', str(output_dir),
+                str(tex_file)
+            ], 
+            capture_output=True, 
+            text=True,
+            cwd=output_dir
+            )
+
+            if result.returncode != 0:
+                pdflatex_success = False
+                break
+
+        if pdflatex_success:
+            print("PDF compilation successful!")
+            return True
+
+        # If pdflatex failed, try latexmk as fallback
+        print("pdflatex compilation failed. Trying latexmk...")
         result = subprocess.run([
-            'pdflatex',
+            'latexmk',
+            '-pdf',
             '-interaction=nonstopmode',
-            '-output-directory', str(output_dir),
+            '-output-directory=' + str(output_dir),
             str(tex_file)
         ], 
         capture_output=True, 
@@ -188,31 +215,13 @@ def compile_latex_to_pdf(tex_file: Path, output_dir: Path) -> bool:
         )
 
         if result.returncode == 0:
-            print("PDF compilation successful!")
+            print("PDF compilation successful with latexmk!")
             return True
         else:
-            print("pdflatex compilation failed. Trying latexmk...")
-            # Try latexmk as fallback
-            result = subprocess.run([
-                'latexmk',
-                '-pdf',
-                '-interaction=nonstopmode',
-                '-output-directory=' + str(output_dir),
-                str(tex_file)
-            ], 
-            capture_output=True, 
-            text=True,
-            cwd=output_dir
-            )
-
-            if result.returncode == 0:
-                print("PDF compilation successful with latexmk!")
-                return True
-            else:
-                print(f"LaTeX compilation failed:")
-                print(f"stdout: {result.stdout}")
-                print(f"stderr: {result.stderr}")
-                return False
+            print(f"LaTeX compilation failed:")
+            print(f"stdout: {result.stdout}")
+            print(f"stderr: {result.stderr}")
+            return False
 
     except FileNotFoundError:
         print("Error: Neither pdflatex nor latexmk found. Please install a LaTeX distribution.")
