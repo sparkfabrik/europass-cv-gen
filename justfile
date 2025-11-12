@@ -125,10 +125,12 @@ ensure-image:
     fi
 
 # Generate all available CVs
+
 all *flags: ensure-image
     #!/usr/bin/env bash
     anon_flag=""
     force_flag=""
+    timestamp_flag=""
 
     # Process flags
     for flag in {{flags}}; do
@@ -139,6 +141,9 @@ all *flags: ensure-image
                 ;;
             --force)
                 force_flag="--force"
+                ;;
+            --timestamp)
+                timestamp_flag="--timestamp"
                 ;;
         esac
     done
@@ -151,11 +156,11 @@ all *flags: ensure-image
         if [ -n "$template" ]; then
             if [ -n "$anon_flag" ]; then
                 # Generate both standard and anonymous versions
-                just cv "$template" $force_flag
-                just cv "$template" --anon $force_flag
+                just cv "$template" $force_flag $timestamp_flag
+                just cv "$template" --anon $force_flag $timestamp_flag
             else
                 # Generate standard version only
-                just cv "$template" $force_flag
+                just cv "$template" $force_flag $timestamp_flag
             fi
         fi
     done
