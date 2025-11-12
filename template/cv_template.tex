@@ -67,5 +67,15 @@
 \end{ecvitemize}
 }
 
+{% if skills.other %}
+\ecvblueitem{Other skills}{
+\begin{ecvitemize}
+{% for skill in skills.other %}
+  \item {{ skill }}
+{% endfor %}
+\end{ecvitemize}
+}
+{% endif %}
+
 \end{europasscv}
 \end{document}
