@@ -154,6 +154,33 @@ properties:
                 type: string
       additionalProperties: false
 
+  certifications:
+    type: array
+    description: "Professional certifications and licenses"
+    items:
+      type: object
+      required: [name, issuer]
+      properties:
+        period:
+          type: string
+          description: "Certification period or validity - flexible format"
+          minLength: 1
+        name:
+          type: string
+          description: "Certification or license name"
+          minLength: 1
+          maxLength: 200
+        issuer:
+          type: string
+          description: "Issuing organization"
+          minLength: 1
+          maxLength: 200
+        details:
+          type: string
+          description: "Additional details (optional)"
+      additionalProperties: false
+    maxItems: 50
+
   languages:
     type: object
     description: "Language skills section"

@@ -42,6 +42,17 @@
 \ecvitem{}{ {{ edu.institution }} }
 {% endfor %}
 
+{% if certifications %}
+\ecvsection{Certifications and licenses}
+{% for cert in certifications %}
+\ecvtitle{ {{ cert.period }} }{ {{ cert.name }} }
+\ecvitem{}{ {{ cert.issuer }} }
+{% if cert.details %}
+\ecvitem{}{ {{ cert.details }} }
+{% endif %}
+{% endfor %}
+{% endif %}
+
 \ecvsection{Personal skills}
 \ecvmothertongue{ {{ languages.mother_tongue }} }
 {% for lang in languages.foreign_languages %}

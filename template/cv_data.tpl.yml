@@ -34,6 +34,12 @@ education:  # Required - at least 1 entry, max 15
     level: ""  # Optional - Format: "ISCED 6" (where number is 0-8)
     details: ""  # Optional - can be string (max 500 chars) or list (max 10 items, 100 chars each)
 
+certifications:  # Optional - max 50 entries
+  - period: ""  # Optional - Format: "2022 – Present" or "December 2022 – December 2025"
+    name: ""  # Required - 1-200 characters (e.g., "AWS Certified Solutions Architect")
+    issuer: ""  # Required - 1-200 characters (e.g., "Amazon Web Services")
+    details: ""  # Optional - Additional information about the certification
+
 languages:
   mother_tongue: ""  # Required - 1-50 characters
   foreign_languages:  # Optional - max 10 languages
